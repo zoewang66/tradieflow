@@ -1,0 +1,16 @@
+services:
+  db:
+    image: postgres:16
+    container_name: tradieflow-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: tradieflow
+      POSTGRES_USER: tradieflow
+      POSTGRES_PASSWORD: devpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - tradieflow-pgdata:/var/lib/postgresql/data
+
+volumes:
+  tradieflow-pgdata:
