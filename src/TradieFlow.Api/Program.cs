@@ -1,5 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using TradieFlow.Infrastructure.Data;
+using TradieFlow.Application.Interfaces;
+using TradieFlow.Infrastructure.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -7,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 builder.Services.AddDbContext<TradieFlowDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
-    
+
+builder.Services.AddScoped<IClientService, ClientService>();
+
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
 builder.Services.AddOpenApi();
 
