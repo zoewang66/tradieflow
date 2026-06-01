@@ -44,4 +44,42 @@ public class ClientService : IClientService
                 c.Phone, c.Address, c.Notes, c.CreatedAt))
             .ToListAsync();
     }
+
+    public async Task<ClientResponse?> GetByIdAsync(int id)
+{
+    return await _db.Clients
+        .Where(c => c.Id == id)
+        .Select(c => new ClientResponse(
+            c.Id, c.Name, c.CompanyName, c.Email,
+            c.Phone, c.Address, c.Notes, c.CreatedAt))
+        .FirstOrDefaultAsync();
+}
+
+public async Task<bool> UpdateAsync(int id, UpdateClientRequest request)
+{
+    var client = await _db.Clients.FindAsync(id);
+    if (client is null)
+        return false;
+
+    client.Name = request.Name;
+    client.CompanyName = request.CompanyName;
+    client.Email = request.Email;
+    client.Phone = request.Phone;
+    client.Address = request.Address;
+    client.Notes = request.Notes;
+
+    await _db.SaveChangesAsync();
+    return true;
+}
+
+public async Task<bool> DeleteAsync(int id)
+{
+    var client = await _db.Clients.FindAsync(id);
+    if (client is null)
+        return false;
+
+    _db.Clients.Remove(client);
+    await _db.SaveChangesAsync();
+    return true;
+}
 }

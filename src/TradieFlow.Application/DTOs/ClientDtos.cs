@@ -17,3 +17,8 @@ public record ClientResponse(
     string? Notes,
     DateTime CreatedAt
 );
+
+public record UpdateClientRequest(
+    string Name, string? CompanyName, string? Email,
+    string? Phone, string? Address, string? Notes
+);
