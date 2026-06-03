@@ -1,50 +1,36 @@
 import { useEffect, useState, type FormEvent } from "react";
-import { getClients, createClient, updateClient, deleteClient, type NewClient, type Client } from "./api";
+import {
+  getClients, createClient, updateClient, deleteClient,
+  type Client, type NewClient,
+} from "./api";
+import "./App.css";
 
 function App() {
   const [clients, setClients] = useState<Client[]>([]);
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
+  const [editing, setEditing] = useState<Client | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [editing, setEditing] = useState<Client | null>(null);
 
-
-  useEffect(() => {
-    refresh();
-  }, []);
+  useEffect(() => { refresh(); }, []);
 
   async function refresh() {
-    try {
-      setClients(await getClients());
-    } catch (e) {
-      setError((e as Error).message);
-    }
+    try { setClients(await getClients()); }
+    catch (e) { setError((e as Error).message); }
   }
 
   function startEdit(client: Client) {
-    setEditing(client);
-    setName(client.name);
-    setEmail(client.email ?? "");
-    setError(null);
+    setEditing(client); setName(client.name); setEmail(client.email ?? ""); setError(null);
   }
-
-  function cancelEdit() {
-    setEditing(null);
-    setName("");
-    setEmail("");
-  }
+  function cancelEdit() { setEditing(null); setName(""); setEmail(""); }
 
   async function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    setError(null);
-    setLoading(true);
+    e.preventDefault(); setError(null); setLoading(true);
     try {
       if (editing) {
-        // PUT 会整体替换这条记录,所以把表单没显示的字段也带上,避免被清空
         const payload: NewClient = {
-          name,
-          email: email || undefined,
+          name, email: email || undefined,
           companyName: editing.companyName ?? undefined,
           phone: editing.phone ?? undefined,
           address: editing.address ?? undefined,
@@ -54,56 +40,75 @@ function App() {
       } else {
         await createClient({ name, email: email || undefined });
       }
-      cancelEdit();
-      await refresh();
-    } catch (err) {
-      setError((err as Error).message);
-    } finally {
-      setLoading(false);
-    }
+      cancelEdit(); await refresh();
+    } catch (err) { setError((err as Error).message); }
+    finally { setLoading(false); }
   }
 
   async function handleDelete(id: number) {
     setError(null);
     try {
       await deleteClient(id);
-      if (editing?.id === id) cancelEdit(); // 如果删的正是在编辑的那条,清空表单
+      if (editing?.id === id) cancelEdit();
       await refresh();
-    } catch (err) {
-      setError((err as Error).message);
-    }
+    } catch (err) { setError((err as Error).message); }
   }
 
   return (
-    <div style={{ maxWidth: 600, margin: "2rem auto", fontFamily: "sans-serif" }}>
-      <h1>Clients</h1>
+    <div className="app">
+      <header className="app-header">
+        <div className="app-logo">T</div>
+        <div>
+          <div className="app-title">TradieFlow</div>
+          <div className="app-subtitle">Client manager</div>
+        </div>
+      </header>
 
-      <form onSubmit={handleSubmit} style={{ marginBottom: "1.5rem" }}>
-        <input placeholder="Name (required)" value={name}
-               onChange={(e) => setName(e.target.value)} />
-        <input placeholder="Email" value={email}
-               onChange={(e) => setEmail(e.target.value)} />
-        <button type="submit" disabled={loading}>
-          {loading ? "Saving..." : editing ? "Update" : "Add client"}
-        </button>
-        {editing && (
-          <button type="button" onClick={cancelEdit} disabled={loading}>
-            Cancel
-          </button>
-        )}
-      </form>
+      <section className="card form-card">
+        <h2>{editing ? "Edit client" : "Add a client"}</h2>
+        <form onSubmit={handleSubmit}>
+          <div className="field-row">
+            <input className="input" placeholder="Name (required)"
+                   value={name} onChange={(e) => setName(e.target.value)} />
+            <input className="input" placeholder="Email"
+                   value={email} onChange={(e) => setEmail(e.target.value)} />
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+              {loading ? "Saving…" : editing ? "Update" : "Add client"}
+            </button>
+            {editing && (
+              <button type="button" className="btn btn-ghost" onClick={cancelEdit} disabled={loading}>
+                Cancel
+              </button>
+            )}
+          </div>
+        </form>
+      </section>
 
-      {error && <p style={{ color: "red" }}>{error}</p>}
+      {error && <div className="error">{error}</div>}
 
-      <ul>
-        {clients.map((c) => (
-          <li key={c.id} style={{ marginBottom: "0.5rem" }}>
-            <strong>{c.name}</strong>{c.email ? ` — ${c.email}` : ""}{" "}
-            <button onClick={() => startEdit(c)}>Edit</button>{" "}
-            <button onClick={() => handleDelete(c.id)}>Delete</button>
-          </li>
-        ))}
-      </ul>
+      <div className="list-head">
+        <h2>Clients</h2>
+        <span className="count-badge">{clients.length}</span>
+      </div>
+
+      {clients.length === 0 ? (
+        <div className="empty">No clients yet — add your first one above.</div>
+      ) : (
+        <ul className="client-list">
+          {clients.map((c) => (
+            <li key={c.id} className="card client">
+              <div className="client-info">
+                <div className="client-name">{c.name}</div>
+                {c.email && <div className="client-email">{c.email}</div>}
+              </div>
+              <div className="client-actions">
+                <button className="btn btn-sm btn-edit" onClick={() => startEdit(c)}>Edit</button>
+                <button className="btn btn-sm btn-delete" onClick={() => handleDelete(c.id)}>Delete</button>
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   );
 }
