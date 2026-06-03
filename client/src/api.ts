@@ -53,3 +53,54 @@ export async function deleteClient(id: number): Promise<void> {
   });
   if (!res.ok) throw new Error(`Failed to delete client (${res.status})`);
 }
+
+export type JobStatus = "Quoted" | "Scheduled" | "InProgress" | "Completed" | "Cancelled";
+
+export interface Job {
+  id: number;
+  clientId: number;
+  clientName: string;
+  title: string;
+  description: string | null;
+  status: JobStatus;
+  scheduledAt: string | null;
+  createdAt: string;
+}
+export interface NewJob {
+  clientId: number;
+  title: string;
+  description?: string;
+  status?: JobStatus;
+  scheduledAt?: string;
+}
+export interface UpdateJob {
+  title: string;
+  description?: string;
+  status: JobStatus;
+  scheduledAt?: string;
+}
+
+export async function getJobs(clientId: number): Promise<Job[]> {
+  const res = await fetch(`${API_BASE}/api/jobs?clientId=${clientId}`);
+  if (!res.ok) throw new Error(`Failed to load jobs (${res.status})`);
+  return res.json();
+}
+export async function createJob(input: NewJob): Promise<Job> {
+  const res = await fetch(`${API_BASE}/api/jobs`, {
+    method: "POST", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error(`Failed to create job (${res.status})`);
+  return res.json();
+}
+export async function updateJob(id: number, input: UpdateJob): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/jobs/${id}`, {
+    method: "PUT", headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error(`Failed to update job (${res.status})`);
+}
+export async function deleteJob(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/jobs/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error(`Failed to delete job (${res.status})`);
+}

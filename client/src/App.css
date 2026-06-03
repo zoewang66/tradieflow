@@ -74,3 +74,34 @@
 }
 
 @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* selected client + jobs button */
+.client-selected { box-shadow: 0 0 0 2px var(--color-accent); }
+.btn-jobs { background: transparent; color: var(--color-accent); border-color: var(--color-line); }
+.btn-jobs:hover { background: var(--color-accent-soft); }
+
+/* jobs panel */
+.jobs-panel { padding: 1.25rem; margin-top: 1.5rem; }
+.jobs-panel h2 { font-family: var(--font-display); font-size: 1.05rem; font-weight: 700; margin-bottom: 0.9rem; }
+.jobs-panel .field-row { margin-bottom: 1rem; }
+
+.job-list { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
+.job {
+  display: flex; align-items: center; gap: 0.75rem;
+  padding: 0.7rem 0.9rem; border: 1px solid var(--color-line);
+  border-radius: var(--radius-sm); background: #fff;
+}
+.job-info { flex: 1; min-width: 0; }
+.job-title { font-weight: 600; }
+.job-desc { color: var(--color-muted); font-size: 0.85rem; }
+
+/* status pill (a styled <select>) */
+.status-select {
+  padding: 0.3rem 0.55rem; border-radius: 999px; border: 1px solid transparent;
+  font-size: 0.8rem; font-weight: 600; cursor: pointer;
+}
+.status-quoted     { background: #f1efe9; color: #6b655c; }
+.status-scheduled  { background: #e7f0fb; color: #1d4ed8; }
+.status-inprogress { background: #fbeedd; color: #b45309; }
+.status-completed  { background: #e6f4ea; color: #15803d; }
+.status-cancelled  { background: #fbe9e7; color: #b42318; }
