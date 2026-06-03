@@ -9,6 +9,7 @@ namespace TradieFlow.Domain.Entities
         public string? Phone { get; set; }
         public string? Address { get; set; }
         public string? Notes { get; set; }
+        public List<Job> Jobs { get; set; } = new();
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
     }
 }

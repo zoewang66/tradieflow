@@ -10,4 +10,12 @@ public class TradieFlowDbContext : DbContext
     }
 
     public DbSet<Client> Clients => Set<Client>();
+    public DbSet<Job> Jobs => Set<Job>();
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+{
+    modelBuilder.Entity<Job>()
+        .Property(j => j.Status)
+        .HasConversion<string>();   // store "Quoted"/"Completed" instead of 0/4
+}
 }
