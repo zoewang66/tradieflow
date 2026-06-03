@@ -11,11 +11,26 @@ public class TradieFlowDbContext : DbContext
 
     public DbSet<Client> Clients => Set<Client>();
     public DbSet<Job> Jobs => Set<Job>();
+    public DbSet<Invoice> Invoices => Set<Invoice>();       
+    public DbSet<LineItem> LineItems => Set<LineItem>();  
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
-{
+    {
     modelBuilder.Entity<Job>()
         .Property(j => j.Status)
-        .HasConversion<string>();   // store "Quoted"/"Completed" instead of 0/4
-}
+        .HasConversion<string>();
+
+    modelBuilder.Entity<Invoice>()
+        .Property(i => i.Status)
+        .HasConversion<string>();
+
+    // money: store with 2 decimal places of precision
+    modelBuilder.Entity<LineItem>()
+        .Property(li => li.Quantity)
+        .HasPrecision(18, 2);
+
+    modelBuilder.Entity<LineItem>()
+        .Property(li => li.UnitPrice)
+        .HasPrecision(18, 2);
+    }
 }

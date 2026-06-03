@@ -16,6 +16,7 @@ public class Job
 
     public int ClientId { get; set; }          
     public Client Client { get; set; } = null!; 
+    public List<Invoice> Invoices { get; set; } = new();
 
     public string Title { get; set; } = string.Empty;
     public string? Description { get; set; }

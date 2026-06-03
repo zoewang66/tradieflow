@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TradieFlow.Infrastructure.Data;
@@ -11,9 +12,11 @@ using TradieFlow.Infrastructure.Data;
 namespace TradieFlow.Infrastructure.Migrations
 {
     [DbContext(typeof(TradieFlowDbContext))]
-    partial class TradieFlowDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260603103107_AddInvoiceAndLineItem")]
+    partial class AddInvoiceAndLineItem
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
