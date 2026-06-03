@@ -14,6 +14,7 @@ builder.Services.AddDbContext<TradieFlowDbContext>(options =>
 
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IJobService, JobService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
