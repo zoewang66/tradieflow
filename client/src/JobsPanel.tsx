@@ -1,10 +1,22 @@
 import { useEffect, useState, type FormEvent } from "react";
 import {
-  getJobs, createJob, updateJob, deleteJob,
-  type Client, type Job, type JobStatus,
+  getJobs,
+  createJob,
+  updateJob,
+  deleteJob,
+  type Client,
+  type Job,
+  type JobStatus,
 } from "./api";
+import { InvoicesPanel } from "./InvoicesPanel";
 
-const STATUSES: JobStatus[] = ["Quoted", "Scheduled", "InProgress", "Completed", "Cancelled"];
+const STATUSES: JobStatus[] = [
+  "Quoted",
+  "Scheduled",
+  "InProgress",
+  "Completed",
+  "Cancelled",
+];
 
 export function JobsPanel({ client }: { client: Client }) {
   const [jobs, setJobs] = useState<Job[]>([]);
@@ -12,23 +24,36 @@ export function JobsPanel({ client }: { client: Client }) {
   const [status, setStatus] = useState<JobStatus>("Quoted");
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [selectedJob, setSelectedJob] = useState<Job | null>(null);
 
   // reload jobs whenever the selected client changes
-  useEffect(() => { refresh(); }, [client.id]);
+  useEffect(() => {
+    refresh();
+    setSelectedJob(null);
+  }, [client.id]);
 
   async function refresh() {
-    try { setJobs(await getJobs(client.id)); }
-    catch (e) { setError((e as Error).message); }
+    try {
+      setJobs(await getJobs(client.id));
+    } catch (e) {
+      setError((e as Error).message);
+    }
   }
 
   async function handleAdd(e: FormEvent) {
-    e.preventDefault(); setError(null); setLoading(true);
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
     try {
       await createJob({ clientId: client.id, title, status });
-      setTitle(""); setStatus("Quoted");
+      setTitle("");
+      setStatus("Quoted");
       await refresh();
-    } catch (err) { setError((err as Error).message); }
-    finally { setLoading(false); }
+    } catch (err) {
+      setError((err as Error).message);
+    } finally {
+      setLoading(false);
+    }
   }
 
   async function handleStatusChange(job: Job, newStatus: JobStatus) {
@@ -42,13 +67,20 @@ export function JobsPanel({ client }: { client: Client }) {
         scheduledAt: job.scheduledAt ?? undefined,
       });
       await refresh();
-    } catch (err) { setError((err as Error).message); }
+    } catch (err) {
+      setError((err as Error).message);
+    }
   }
 
   async function handleDelete(id: number) {
     setError(null);
-    try { await deleteJob(id); await refresh(); }
-    catch (err) { setError((err as Error).message); }
+    try {
+      await deleteJob(id);
+      if (selectedJob?.id === id) setSelectedJob(null);
+      await refresh();
+    } catch (err) {
+      setError((err as Error).message);
+    }
   }
 
   return (
@@ -56,11 +88,22 @@ export function JobsPanel({ client }: { client: Client }) {
       <h2>Jobs for {client.name}</h2>
 
       <form onSubmit={handleAdd} className="field-row">
-        <input className="input" placeholder="Job title (required)"
-               value={title} onChange={(e) => setTitle(e.target.value)} />
-        <select className="input" value={status}
-                onChange={(e) => setStatus(e.target.value as JobStatus)}>
-          {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+        <input
+          className="input"
+          placeholder="Job title (required)"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+        />
+        <select
+          className="input"
+          value={status}
+          onChange={(e) => setStatus(e.target.value as JobStatus)}
+        >
+          {STATUSES.map((s) => (
+            <option key={s} value={s}>
+              {s}
+            </option>
+          ))}
         </select>
         <button type="submit" className="btn btn-primary" disabled={loading}>
           {loading ? "Saving…" : "Add job"}
@@ -74,23 +117,48 @@ export function JobsPanel({ client }: { client: Client }) {
       ) : (
         <ul className="job-list">
           {jobs.map((j) => (
-            <li key={j.id} className="job">
+            <li
+              key={j.id}
+              className={
+                "job" + (selectedJob?.id === j.id ? " job-selected" : "")
+              }
+            >
               <div className="job-info">
                 <div className="job-title">{j.title}</div>
-                {j.description && <div className="job-desc">{j.description}</div>}
+                {j.description && (
+                  <div className="job-desc">{j.description}</div>
+                )}
               </div>
               <select
                 className={`status-select status-${j.status.toLowerCase()}`}
                 value={j.status}
-                onChange={(e) => handleStatusChange(j, e.target.value as JobStatus)}
+                onChange={(e) =>
+                  handleStatusChange(j, e.target.value as JobStatus)
+                }
               >
-                {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
+                {STATUSES.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
               </select>
-              <button className="btn btn-sm btn-delete" onClick={() => handleDelete(j.id)}>Delete</button>
+              <button
+                className="btn btn-sm btn-invoices"
+                onClick={() => setSelectedJob(j)}
+              >
+                Invoices
+              </button>
+              <button
+                className="btn btn-sm btn-delete"
+                onClick={() => handleDelete(j.id)}
+              >
+                Delete
+              </button>
             </li>
           ))}
         </ul>
       )}
+      {selectedJob && <InvoicesPanel job={selectedJob} />}
     </section>
   );
 }

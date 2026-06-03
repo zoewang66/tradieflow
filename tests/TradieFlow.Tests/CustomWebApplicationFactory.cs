@@ -12,8 +12,7 @@ namespace TradieFlow.Tests;
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     // a throwaway PostgreSQL container, just for the tests
-    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder()
-        .WithImage("postgres:16")
+    private readonly PostgreSqlContainer _dbContainer = new PostgreSqlBuilder("postgres:16")
         .Build();
 
     // Swap the app's real database for the test container

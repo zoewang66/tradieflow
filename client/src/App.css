@@ -105,3 +105,46 @@
 .status-inprogress { background: #fbeedd; color: #b45309; }
 .status-completed  { background: #e6f4ea; color: #15803d; }
 .status-cancelled  { background: #fbe9e7; color: #b42318; }
+
+/* selected job + invoices button */
+.job-selected { box-shadow: 0 0 0 2px var(--color-accent); }
+.btn-invoices { background: transparent; color: var(--color-accent); border-color: var(--color-line); }
+.btn-invoices:hover { background: var(--color-accent-soft); }
+
+/* invoices panel */
+.invoices-panel { padding: 1.1rem; margin-top: 1rem; background: var(--color-bg); }
+.invoices-panel h3 { font-family: var(--font-display); font-size: 0.98rem; font-weight: 700; margin-bottom: 0.8rem; }
+
+.invoice-form { margin-bottom: 1.2rem; }
+.li-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.45rem; }
+.li-desc { flex: 1; }
+.li-qty, .li-price { width: 90px; }
+.li-total { width: 90px; text-align: right; color: var(--color-muted); font-size: 0.88rem; }
+.add-row { margin-bottom: 0.8rem; }
+
+.totals-preview {
+  display: flex; gap: 1rem; justify-content: flex-end; align-items: baseline;
+  padding: 0.6rem 0; border-top: 1px solid var(--color-line); margin-bottom: 0.8rem;
+  font-size: 0.88rem; color: var(--color-muted);
+}
+.totals-preview strong { color: var(--color-ink); font-size: 1rem; }
+
+.invoice-list { list-style: none; display: flex; flex-direction: column; gap: 0.7rem; }
+.invoice { border: 1px solid var(--color-line); border-radius: var(--radius-sm); background: #fff; padding: 0.85rem; }
+.invoice-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.6rem; }
+.invoice-head strong { flex: 1; font-family: var(--font-display); }
+.invoice-lines { list-style: none; display: flex; flex-direction: column; gap: 0.25rem; font-size: 0.88rem; }
+.invoice-lines li { display: flex; justify-content: space-between; gap: 1rem; color: var(--color-muted); }
+.invoice-lines li span:first-child { flex: 1; color: var(--color-ink); }
+.invoice-totals {
+  display: flex; gap: 1rem; justify-content: flex-end; align-items: baseline;
+  margin-top: 0.6rem; padding-top: 0.5rem; border-top: 1px dashed var(--color-line);
+  font-size: 0.85rem; color: var(--color-muted);
+}
+.invoice-totals strong { color: var(--color-ink); }
+
+/* invoice status pills */
+.inv-draft     { background: #f1efe9; color: #6b655c; }
+.inv-sent      { background: #e7f0fb; color: #1d4ed8; }
+.inv-paid      { background: #e6f4ea; color: #15803d; }
+.inv-cancelled { background: #fbe9e7; color: #b42318; }

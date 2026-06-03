@@ -104,3 +104,39 @@ export async function deleteJob(id: number): Promise<void> {
   const res = await fetch(`${API_BASE}/api/jobs/${id}`, { method: "DELETE" });
   if (!res.ok) throw new Error(`Failed to delete job (${res.status})`);
 }
+
+export type InvoiceStatus = "Draft" | "Sent" | "Paid" | "Cancelled";
+
+export interface LineItem {
+  id: number; description: string; quantity: number; unitPrice: number; lineTotal: number;
+}
+export interface Invoice {
+  id: number; jobId: number; invoiceNumber: string; status: InvoiceStatus;
+  issuedAt: string; dueAt: string | null; notes: string | null; createdAt: string;
+  lineItems: LineItem[]; subtotal: number; gst: number; total: number;
+}
+export interface NewLineItem { description: string; quantity: number; unitPrice: number; }
+export interface NewInvoice { jobId: number; notes?: string; dueAt?: string; lineItems: NewLineItem[]; }
+
+export async function getInvoices(jobId: number): Promise<Invoice[]> {
+  const res = await fetch(`${API_BASE}/api/invoices?jobId=${jobId}`);
+  if (!res.ok) throw new Error(`Failed to load invoices (${res.status})`);
+  return res.json();
+}
+export async function createInvoice(input: NewInvoice): Promise<Invoice> {
+  const res = await fetch(`${API_BASE}/api/invoices`, {
+    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error(`Failed to create invoice (${res.status})`);
+  return res.json();
+}
+export async function updateInvoiceStatus(id: number, status: InvoiceStatus): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/invoices/${id}/status`, {
+    method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }),
+  });
+  if (!res.ok) throw new Error(`Failed to update invoice (${res.status})`);
+}
+export async function deleteInvoice(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/invoices/${id}`, { method: "DELETE" });
+  if (!res.ok) throw new Error(`Failed to delete invoice (${res.status})`);
+}
