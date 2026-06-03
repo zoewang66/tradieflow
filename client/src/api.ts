@@ -37,3 +37,19 @@ export async function createClient(input: NewClient): Promise<Client> {
   if (!res.ok) throw new Error(`Failed to create client (${res.status})`);
   return res.json();
 }
+
+export async function updateClient(id: number, input: NewClient): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/clients/${id}`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
+  });
+  if (!res.ok) throw new Error(`Failed to update client (${res.status})`);
+}
+
+export async function deleteClient(id: number): Promise<void> {
+  const res = await fetch(`${API_BASE}/api/clients/${id}`, {
+    method: "DELETE",
+  });
+  if (!res.ok) throw new Error(`Failed to delete client (${res.status})`);
+}
