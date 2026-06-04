@@ -15,17 +15,30 @@ builder.Services.AddDbContext<TradieFlowDbContext>(options =>
 builder.Services.AddScoped<IClientService, ClientService>();
 builder.Services.AddScoped<IJobService, JobService>();
 builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+var frontendUrl = Environment.GetEnvironmentVariable("FRONTEND_URL");
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
-        policy.WithOrigins("http://localhost:5173")  
+    {
+        var origins = new List<string> { "http://localhost:5173" };
+        if (!string.IsNullOrEmpty(frontendUrl))
+            origins.Add(frontendUrl);
+        policy.WithOrigins(origins.ToArray())
               .AllowAnyHeader()
-              .AllowAnyMethod());
+              .AllowAnyMethod();
+    });
 });
 
 builder.Services.AddOpenApi();
 
 var app = builder.Build();
+
+// Apply any pending EF Core migrations on startup (creates the tables)
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<TradieFlowDbContext>();
+    db.Database.Migrate();
+}
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
