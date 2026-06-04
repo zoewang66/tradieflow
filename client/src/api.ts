@@ -1,4 +1,4 @@
-const API_BASE = "http://localhost:5167"; 
+const API_BASE = import.meta.env.VITE_API_URL ?? "http://localhost:5167";
 
 // ClientResponse
 export interface Client {
@@ -38,7 +38,10 @@ export async function createClient(input: NewClient): Promise<Client> {
   return res.json();
 }
 
-export async function updateClient(id: number, input: NewClient): Promise<void> {
+export async function updateClient(
+  id: number,
+  input: NewClient,
+): Promise<void> {
   const res = await fetch(`${API_BASE}/api/clients/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
@@ -54,7 +57,12 @@ export async function deleteClient(id: number): Promise<void> {
   if (!res.ok) throw new Error(`Failed to delete client (${res.status})`);
 }
 
-export type JobStatus = "Quoted" | "Scheduled" | "InProgress" | "Completed" | "Cancelled";
+export type JobStatus =
+  | "Quoted"
+  | "Scheduled"
+  | "InProgress"
+  | "Completed"
+  | "Cancelled";
 
 export interface Job {
   id: number;
@@ -87,7 +95,8 @@ export async function getJobs(clientId: number): Promise<Job[]> {
 }
 export async function createJob(input: NewJob): Promise<Job> {
   const res = await fetch(`${API_BASE}/api/jobs`, {
-    method: "POST", headers: { "Content-Type": "application/json" },
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   });
   if (!res.ok) throw new Error(`Failed to create job (${res.status})`);
@@ -95,7 +104,8 @@ export async function createJob(input: NewJob): Promise<Job> {
 }
 export async function updateJob(id: number, input: UpdateJob): Promise<void> {
   const res = await fetch(`${API_BASE}/api/jobs/${id}`, {
-    method: "PUT", headers: { "Content-Type": "application/json" },
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify(input),
   });
   if (!res.ok) throw new Error(`Failed to update job (${res.status})`);
@@ -108,15 +118,37 @@ export async function deleteJob(id: number): Promise<void> {
 export type InvoiceStatus = "Draft" | "Sent" | "Paid" | "Cancelled";
 
 export interface LineItem {
-  id: number; description: string; quantity: number; unitPrice: number; lineTotal: number;
+  id: number;
+  description: string;
+  quantity: number;
+  unitPrice: number;
+  lineTotal: number;
 }
 export interface Invoice {
-  id: number; jobId: number; invoiceNumber: string; status: InvoiceStatus;
-  issuedAt: string; dueAt: string | null; notes: string | null; createdAt: string;
-  lineItems: LineItem[]; subtotal: number; gst: number; total: number;
+  id: number;
+  jobId: number;
+  invoiceNumber: string;
+  status: InvoiceStatus;
+  issuedAt: string;
+  dueAt: string | null;
+  notes: string | null;
+  createdAt: string;
+  lineItems: LineItem[];
+  subtotal: number;
+  gst: number;
+  total: number;
 }
-export interface NewLineItem { description: string; quantity: number; unitPrice: number; }
-export interface NewInvoice { jobId: number; notes?: string; dueAt?: string; lineItems: NewLineItem[]; }
+export interface NewLineItem {
+  description: string;
+  quantity: number;
+  unitPrice: number;
+}
+export interface NewInvoice {
+  jobId: number;
+  notes?: string;
+  dueAt?: string;
+  lineItems: NewLineItem[];
+}
 
 export async function getInvoices(jobId: number): Promise<Invoice[]> {
   const res = await fetch(`${API_BASE}/api/invoices?jobId=${jobId}`);
@@ -125,18 +157,27 @@ export async function getInvoices(jobId: number): Promise<Invoice[]> {
 }
 export async function createInvoice(input: NewInvoice): Promise<Invoice> {
   const res = await fetch(`${API_BASE}/api/invoices`, {
-    method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(input),
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(input),
   });
   if (!res.ok) throw new Error(`Failed to create invoice (${res.status})`);
   return res.json();
 }
-export async function updateInvoiceStatus(id: number, status: InvoiceStatus): Promise<void> {
+export async function updateInvoiceStatus(
+  id: number,
+  status: InvoiceStatus,
+): Promise<void> {
   const res = await fetch(`${API_BASE}/api/invoices/${id}/status`, {
-    method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ status }),
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ status }),
   });
   if (!res.ok) throw new Error(`Failed to update invoice (${res.status})`);
 }
 export async function deleteInvoice(id: number): Promise<void> {
-  const res = await fetch(`${API_BASE}/api/invoices/${id}`, { method: "DELETE" });
+  const res = await fetch(`${API_BASE}/api/invoices/${id}`, {
+    method: "DELETE",
+  });
   if (!res.ok) throw new Error(`Failed to delete invoice (${res.status})`);
 }
