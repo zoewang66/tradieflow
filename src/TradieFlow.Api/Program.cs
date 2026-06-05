@@ -38,6 +38,7 @@ using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<TradieFlowDbContext>();
     db.Database.Migrate();
+    await DataSeeder.SeedAsync(db);
 }
 
 // Configure the HTTP request pipeline.
