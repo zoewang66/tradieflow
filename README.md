@@ -10,8 +10,7 @@ A full-stack client, job, and invoice manager for small trade businesses. It is 
 
 ## Live demo
 
-- **App:** https://tradieflow.codewithzoe.com
-- **API:** https://tradieflow-api1.onrender.com
+**App:** https://tradieflow.codewithzoe.com
 
 The demo opens with seeded sample data so there is something to explore straight away.
 
@@ -75,7 +74,7 @@ I deliberately kept this a single deployable service rather than splitting it in
 The app runs as a hosted live demo with each tier on a service suited to it:
 
 - **Frontend:** built with Vite and served as static files from AWS S3 behind CloudFront, over HTTPS on a custom domain (https://tradieflow.codewithzoe.com).
-- **API:** packaged as a Docker image (multi-stage build) and deployed to Render (https://tradieflow-api1.onrender.com).
+- **API:** packaged as a Docker image (multi-stage build) and deployed to Render 
 - **Database:** managed PostgreSQL on Neon, connected over SSL.
 
 On startup the API applies any pending EF Core migrations and seeds sample data if the database is empty. Configuration (database connection, allowed frontend origin, listening port) is read from environment variables, so the same container image runs locally and in production with no code changes.
