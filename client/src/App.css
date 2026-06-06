@@ -148,3 +148,51 @@
 .inv-sent      { background: #e7f0fb; color: #1d4ed8; }
 .inv-paid      { background: #e6f4ea; color: #15803d; }
 .inv-cancelled { background: #fbe9e7; color: #b42318; }
+/* ============================================================
+   Responsive  (codewithzoe breakpoints: 768px tablet, 480px phone)
+   ============================================================ */
+
+/* ---------- Tablet: 768px and below ---------- */
+@media (max-width: 768px) {
+  html { font-size: 17px; }
+  .app { padding: 2.5rem 1.1rem 4rem; }
+}
+
+/* ---------- Phone: 480px and below ---------- */
+@media (max-width: 480px) {
+  html { font-size: 16px; }
+
+  /* trim the stacked panel padding so the inner content keeps its width */
+  .app { padding: 2rem 0.85rem 3.5rem; }
+  .form-card,
+  .jobs-panel { padding: 1rem; }
+  .invoices-panel { padding: 0.85rem; }
+  .invoice { padding: 0.75rem; }
+
+  /* let inputs shrink instead of forcing a row wider than the screen */
+  .input { min-width: 0; }
+
+  /* client card: name/email on its own row, action buttons wrap below */
+  .client { flex-wrap: wrap; gap: 0.6rem; }
+  .client-info { flex: 1 1 100%; }
+  .client-actions { flex-wrap: wrap; }
+
+  /* job card: title on its own row, status + buttons wrap below */
+  .job { flex-wrap: wrap; gap: 0.55rem; }
+  .job-info { flex: 1 1 100%; }
+
+  /* invoice form line: description full width, qty / price / total below */
+  .li-row { flex-wrap: wrap; }
+  .li-desc { flex: 1 1 100%; }
+  .li-qty,
+  .li-price { flex: 1 1 0; width: auto; min-width: 0; }
+  .li-total { width: auto; text-align: right; }
+
+  /* invoice display line: description full width, qty and amount on a row below */
+  .invoice-lines li { flex-wrap: wrap; gap: 0.1rem 0.75rem; }
+  .invoice-lines li span:first-child { flex: 1 1 100%; min-width: 0; }
+
+  /* totals rows wrap and spread instead of overflowing */
+  .totals-preview,
+  .invoice-totals { flex-wrap: wrap; justify-content: space-between; gap: 0.4rem 1rem; }
+}
